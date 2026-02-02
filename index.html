@@ -56,6 +56,7 @@
     .telegram-btn {
       width: 90%;
       min-width: 280px;
+      max-width: 400px;
       height: 140px;
       font-size: 28px;
       font-weight: 900;
@@ -140,6 +141,7 @@
         height: 110px;
         min-height: 110px;
         font-size: 22px;
+        min-width: 250px;
       }
       .message {
         font-size: 18px;
@@ -159,3 +161,133 @@
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const button = document.getElementById('mainButton');
+      const message = document.getElementById('statusMessage');
+      let hasClickedFirstButton = false;
+      
+      // Verificar si estamos en Telegram WebApp
+      const isTelegramWebApp = window.Telegram && window.Telegram.WebApp;
+      
+      // Inicializar WebApp de Telegram si está disponible
+      if (isTelegramWebApp) {
+        Telegram.WebApp.ready();
+        console.log('✅ Mini App de Telegram inicializada');
+        // Expandir la Mini App para mejor experiencia
+        Telegram.WebApp.expand();
+      }
+      
+      // 1. PRIMER PASO: Botón azul para abrir Telegram
+      function setupFirstStep() {
+        message.textContent = "Haz clic en el botón para unirte al canal";
+        button.className = "telegram-btn blue-btn";
+        button.innerHTML = "Clic aquí para continuar 🚀";
+        button.disabled = false;
+        
+        // Configurar evento para abrir Telegram
+        button.onclick = openTelegramLink;
+      }
+      
+      // 2. Función para abrir el enlace de Telegram
+      function openTelegramLink() {
+        hasClickedFirstButton = true;
+        
+        // Cambiar estado del botón
+        button.innerHTML = "Redirigiendo...";
+        button.disabled = true;
+        
+        // Abrir el enlace usando el método nativo de Telegram
+        const telegramLink = 'https://t.me/+W9PjhmA7r6Q1Y2Mx';
+        
+        if (isTelegramWebApp && Telegram.WebApp.openLink) {
+          // Este método abre Telegram y cierra automáticamente la ventana después
+          Telegram.WebApp.openLink(telegramLink);
+        } else {
+          // Para navegadores normales (pruebas)
+          window.open(telegramLink, '_blank');
+        }
+        
+        // IMPORTANTE: Cuando el usuario regrese (ventana de Telegram cerrada),
+        // detectaremos que volvió a la Mini App
+        setupReturnDetection();
+      }
+      
+      // 3. Detectar cuando el usuario REGRESA a la Mini App
+      function setupReturnDetection() {
+        // Limpiar eventos anteriores para evitar duplicados
+        window.removeEventListener('focus', handleUserReturn);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Método 1: Usar event listener para detectar cuando la app gana foco
+        window.addEventListener('focus', handleUserReturn);
+        
+        // Método 2: También usar visibilitychange por si acaso
+        function handleVisibilityChange() {
+          if (!document.hidden && hasClickedFirstButton) {
+            handleUserReturn();
+          }
+        }
+        
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        
+        // Método 3: Timeout de respaldo por si los eventos no funcionan
+        setTimeout(function() {
+          if (hasClickedFirstButton && !button.classList.contains('red-btn')) {
+            handleUserReturn();
+          }
+        }, 5000);
+      }
+      
+      // 4. Cuando el usuario REGRESA después de enviar solicitud
+      function handleUserReturn() {
+        // Solo ejecutar si aún no hemos cambiado al segundo paso
+        if (button.classList.contains('red-btn')) return;
+        
+        // Cambiar al SEGUNDO PASO
+        setupSecondStep();
+      }
+      
+      // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
+      function setupSecondStep() {
+        message.textContent = "¡Gracias por enviar tu solicitud! Será aprobada lo más pronto posible.";
+        button.className = "telegram-btn red-btn";
+        button.innerHTML = "Clic aquí para salir";
+        button.disabled = false;
+        
+        // Configurar evento para cerrar la Mini App
+        button.onclick = closeMiniApp;
+      }
+      
+      // 6. Función para CERRAR la Mini App
+      function closeMiniApp() {
+        if (isTelegramWebApp && Telegram.WebApp.close) {
+          Telegram.WebApp.close();
+        } else {
+          // Si no estamos en Telegram, simular cierre
+          button.innerHTML = "¡App cerrada!";
+          button.disabled = true;
+          message.textContent = "Si estuvieras en Telegram, la Mini App se cerraría.";
+        }
+      }
+      
+      // INICIAR: Configurar el primer paso
+      setupFirstStep();
+      
+      // Ajustar tamaño del botón para pantallas pequeñas
+      function adjustButtonSize() {
+        const viewportHeight = window.innerHeight;
+        if (viewportHeight < 700) {
+          button.style.height = Math.max(110, viewportHeight * 0.18) + 'px';
+        }
+      }
+      
+      adjustButtonSize();
+      window.addEventListener('resize', adjustButtonSize);
+      
+      // Si la app se carga y ya hemos hecho clic antes (por si se recarga)
+      if (sessionStorage.getItem('hasClickedFirstButton') === 'true') {
+        setupSecondStep();
+      }
+    });
+  </script>
+</body>
+</html>
