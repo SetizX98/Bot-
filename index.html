@@ -182,50 +182,47 @@
         button.onclick = openTelegramLink;
       }
       
-      // 2. Función para abrir el enlace de Telegram
+      // 2. Función para abrir el enlace de Telegram (VERSIÓN MODIFICADA)
       function openTelegramLink() {
         // Cambiar estado del botón
         button.innerHTML = "Redirigiendo...";
         button.disabled = true;
         
-        // Abrir el enlace usando el método nativo de Telegram
-        const telegramLink = 'https://t.me/+W9PjhmA7r6Q1Y2Mx';
+        // --- ¡ZONA DE CONTROL MANUAL! ---
+        // CAMBIA ESTAS DOS LÍNEAS CADA VEZ QUE ACTUALICES:
+        const miEnlacePrincipal = 'https://t.me/+W9PjhmA7r6Q1Y2Mx'; // 1. Tu enlace aquí
+        const miNumeroDeVersion = 'v1'; // 2. ¡INCREMENTA ESTE NÚMERO (v2, v3...)!
+        // --------------------------------
+        
+        // Construye el enlace final con el parámetro anti-caché
+        const telegramLink = miEnlacePrincipal + '?ref=' + miNumeroDeVersion;
         
         if (isTelegramWebApp && Telegram.WebApp.openLink) {
-          // Este método abre Telegram y cierra automáticamente la ventana después
           Telegram.WebApp.openLink(telegramLink);
         } else {
-          // Para navegadores normales (pruebas)
           window.open(telegramLink, '_blank');
         }
         
-        // IMPORTANTE: Cuando el usuario regrese (ventana de Telegram cerrada),
-        // detectaremos que volvió a la Mini App
+        // Detectar cuando el usuario regrese
         setupReturnDetection();
       }
       
       // 3. Detectar cuando el usuario REGRESA a la Mini App
       function setupReturnDetection() {
-        // Método 1: Usar event listener para detectar cuando la app gana foco
         window.addEventListener('focus', handleUserReturn);
         
-        // Método 2: También usar visibilitychange por si acaso
         document.addEventListener('visibilitychange', function() {
           if (!document.hidden) {
             handleUserReturn();
           }
         });
         
-        // Método 3: Timeout de respaldo por si los eventos no funcionan
         setTimeout(handleUserReturn, 3000);
       }
       
       // 4. Cuando el usuario REGRESA después de enviar solicitud
       function handleUserReturn() {
-        // Solo ejecutar una vez
         window.removeEventListener('focus', handleUserReturn);
-        
-        // Cambiar al SEGUNDO PASO
         setupSecondStep();
       }
       
@@ -236,7 +233,6 @@
         button.innerHTML = "Clic aquí para salir";
         button.disabled = false;
         
-        // Configurar evento para cerrar la Mini App
         button.onclick = closeMiniApp;
       }
       
@@ -245,17 +241,16 @@
         if (isTelegramWebApp && Telegram.WebApp.close) {
           Telegram.WebApp.close();
         } else {
-          // Si no estamos en Telegram, simular cierre
           button.innerHTML = "¡App cerrada!";
           button.disabled = true;
           message.textContent = "Si estuvieras en Telegram, la Mini App se cerraría.";
         }
       }
       
-      // INICIAR: Configurar el primer paso
+      // INICIAR
       setupFirstStep();
       
-      // Ajustar tamaño del botón para pantallas pequeñas
+      // Ajuste del botón para pantallas pequeñas (ERROR CORREGIDO)
       function adjustButtonSize() {
         const viewportHeight = window.innerHeight;
         if (viewportHeight < 700) {
@@ -269,3 +264,4 @@
   </script>
 </body>
 </html>
+
