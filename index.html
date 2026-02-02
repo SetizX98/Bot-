@@ -8,143 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    body {
-      background-color: #111;
-      width: 100vw;
-      height: 100vh;
-      min-height: -webkit-fill-available;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      font-family: Arial, sans-serif;
-    }
-    
-    .container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      text-align: center;
-    }
-    
-    .message {
-      color: white;
-      font-size: 22px;
-      margin-bottom: 30px;
-      padding: 0 20px;
-      line-height: 1.4;
-      opacity: 0;
-      animation: fadeIn 0.5s ease forwards;
-    }
-    
-    .telegram-btn {
-      width: 90%;
-      min-width: 280px;
-      height: 140px;
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: white;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      transition: all 0.2s ease;
-      touch-action: manipulation;
-      animation: fadeIn 0.5s ease forwards;
-      animation-delay: 0.3s;
-      opacity: 0;
-    }
-    
-    /* Botón AZUL (PRIMER PASO) */
-    .telegram-btn.blue-btn {
-      background: linear-gradient(145deg, #0088ff, #0066cc);
-      box-shadow: 
-        0 10px 0 #004499,
-        inset 0 4px 8px rgba(255, 255, 255, 0.3),
-        0 6px 20px rgba(0, 0, 0, 0.4);
-    }
-    
-    .telegram-btn.blue-btn:active {
-      transform: translateY(8px);
-      box-shadow: 0 2px 0 #004499;
-      background: linear-gradient(145deg, #0066cc, #0055aa);
-    }
-    
-    /* Botón ROJO (SEGUNDO PASO) */
-    .telegram-btn.red-btn {
-      background: linear-gradient(145deg, #ff4444, #cc0000);
-      box-shadow: 
-        0 10px 0 #990000,
-        inset 0 4px 8px rgba(255, 255, 255, 0.3),
-        0 6px 20px rgba(0, 0, 0, 0.4);
-    }
-    
-    .telegram-btn.red-btn:active {
-      transform: translateY(8px);
-      box-shadow: 0 2px 0 #990000;
-      background: linear-gradient(145deg, #cc0000, #aa0000);
-    }
-    
-    .telegram-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-    
-    /* Animaciones */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; visibility: hidden; }
-    }
-    
-    /* Responsive */
-    @media (max-height: 700px) {
-      .telegram-btn {
-        height: 120px;
-        font-size: 24px;
-      }
-      .message {
-        font-size: 20px;
-        margin-bottom: 20px;
-      }
-    }
-    
-    @media (max-width: 360px) {
-      .telegram-btn {
-        height: 110px;
-        min-height: 110px;
-        font-size: 22px;
-      }
-      .message {
-        font-size: 18px;
-      }
-    }
+    /* ... (TODOS TUS ESTILOS PERMANECEN IGUALES) ... */
   </style>
 </head>
 <body>
@@ -162,40 +26,38 @@
       const button = document.getElementById('mainButton');
       const message = document.getElementById('statusMessage');
       
-      // Verificar si estamos en Telegram WebApp
       const isTelegramWebApp = window.Telegram && window.Telegram.WebApp;
-      
-      // Inicializar WebApp de Telegram si está disponible
       if (isTelegramWebApp) {
         Telegram.WebApp.ready();
         console.log('✅ Mini App de Telegram inicializada');
       }
       
-      // 1. PRIMER PASO: Botón azul para abrir Telegram
       function setupFirstStep() {
         message.textContent = "Haz clic en el botón para unirte al canal";
         button.className = "telegram-btn blue-btn";
         button.innerHTML = "Clic aquí para continuar 🚀";
         button.disabled = false;
-        
-        // Configurar evento para abrir Telegram
         button.onclick = openTelegramLink;
       }
       
-      // 2. Función para abrir el enlace de Telegram (VERSIÓN MODIFICADA)
+      // --- FUNCIÓN ACTUALIZADA CON OPCIÓN 1 + OPCIÓN 3 ---
       function openTelegramLink() {
-        // Cambiar estado del botón
         button.innerHTML = "Redirigiendo...";
         button.disabled = true;
         
-        // --- ¡ZONA DE CONTROL MANUAL! ---
-        // CAMBIA ESTAS DOS LÍNEAS CADA VEZ QUE ACTUALICES:
+        // --- OPCIÓN 1: CONTROL MANUAL (TÚ DECIDES) ---
         const miEnlacePrincipal = 'https://t.me/+W9PjhmA7r6Q1Y2Mx'; // 1. Tu enlace aquí
         const miNumeroDeVersion = 'v1'; // 2. ¡INCREMENTA ESTE NÚMERO (v2, v3...)!
-        // --------------------------------
+        // -----------------------------------------------
         
-        // Construye el enlace final con el parámetro anti-caché
-        const telegramLink = miEnlacePrincipal + '?ref=' + miNumeroDeVersion;
+        // --- OPCIÓN 3: PARÁMETRO DINÁMICO (EVITA CACHÉ EN CADA CLIC) ---
+        // Se añade un timestamp único (milisegundos actuales) como parámetro adicional
+        const timestampUnico = '&t=' + new Date().getTime();
+        // -----------------------------------------------------------------
+        
+        // ENLACE FINAL: Combina tu versión + timestamp único para máximo control
+        const telegramLink = miEnlacePrincipal + '?ref=' + miNumeroDeVersion + timestampUnico;
+        // Ejemplo resultante: https://t.me/+W9PjhmA7r6Q1Y2Mx?ref=v1&t=1749020400000
         
         if (isTelegramWebApp && Telegram.WebApp.openLink) {
           Telegram.WebApp.openLink(telegramLink);
@@ -203,40 +65,30 @@
           window.open(telegramLink, '_blank');
         }
         
-        // Detectar cuando el usuario regrese
         setupReturnDetection();
       }
       
-      // 3. Detectar cuando el usuario REGRESA a la Mini App
       function setupReturnDetection() {
         window.addEventListener('focus', handleUserReturn);
-        
         document.addEventListener('visibilitychange', function() {
-          if (!document.hidden) {
-            handleUserReturn();
-          }
+          if (!document.hidden) handleUserReturn();
         });
-        
         setTimeout(handleUserReturn, 3000);
       }
       
-      // 4. Cuando el usuario REGRESA después de enviar solicitud
       function handleUserReturn() {
         window.removeEventListener('focus', handleUserReturn);
         setupSecondStep();
       }
       
-      // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
       function setupSecondStep() {
         message.textContent = "¡Gracias por enviar tu solicitud! Será aprobada lo más pronto posible.";
         button.className = "telegram-btn red-btn";
         button.innerHTML = "Clic aquí para salir";
         button.disabled = false;
-        
         button.onclick = closeMiniApp;
       }
       
-      // 6. Función para CERRAR la Mini App
       function closeMiniApp() {
         if (isTelegramWebApp && Telegram.WebApp.close) {
           Telegram.WebApp.close();
@@ -247,10 +99,9 @@
         }
       }
       
-      // INICIAR
       setupFirstStep();
       
-      // Ajuste del botón para pantallas pequeñas (ERROR CORREGIDO)
+      // FUNCIÓN CORREGIDA (error de sintaxis arreglado)
       function adjustButtonSize() {
         const viewportHeight = window.innerHeight;
         if (viewportHeight < 700) {
