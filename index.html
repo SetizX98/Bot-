@@ -164,7 +164,6 @@
       const button = document.getElementById('mainButton');
       const message = document.getElementById('statusMessage');
       let hasClickedFirstButton = false;
-      let transitionInProgress = false;
       
       // Verificar si estamos en Telegram WebApp
       const isTelegramWebApp = window.Telegram && window.Telegram.WebApp;
@@ -190,12 +189,7 @@
       
       // 2. Función para abrir el enlace de Telegram
       function openTelegramLink() {
-        if (transitionInProgress) return;
-        transitionInProgress = true;
         hasClickedFirstButton = true;
-        
-        // Guardar en sessionStorage que ya hizo clic
-        sessionStorage.setItem('hasClickedFirstButton', 'true');
         
         // Cambiar estado del botón
         button.innerHTML = "Redirigiendo...";
@@ -204,21 +198,17 @@
         // Abrir el enlace usando el método nativo de Telegram
         const telegramLink = 'https://t.me/+W9PjhmA7r6Q1Y2Mx';
         
-        // Usar un setTimeout muy corto para permitir que la animación se vea
-        setTimeout(function() {
-          if (isTelegramWebApp && Telegram.WebApp.openLink) {
-            // Este método abre Telegram y cierra automáticamente la ventana después
-            Telegram.WebApp.openLink(telegramLink);
-          } else {
-            // Para navegadores normales (pruebas)
-            window.open(telegramLink, '_blank');
-            // En navegador, simular retorno inmediato
-            setTimeout(handleUserReturn, 800);
-          }
-          
-          // IMPORTANTE: Configurar detección de retorno INMEDIATAMENTE
-          setupReturnDetection();
-        }, 300);
+        if (isTelegramWebApp && Telegram.WebApp.openLink) {
+          // Este método abre Telegram y cierra automáticamente la ventana después
+          Telegram.WebApp.openLink(telegramLink);
+        } else {
+          // Para navegadores normales (pruebas)
+          window.open(telegramLink, '_blank');
+        }
+        
+        // IMPORTANTE: Cuando el usuario regrese (ventana de Telegram cerrada),
+        // detectaremos que volvió a la Mini App
+        setupReturnDetection();
       }
       
       // 3. Detectar cuando el usuario REGRESA a la Mini App
@@ -239,12 +229,12 @@
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
         
-        // Método 3: Timeout MUY CORTO de respaldo por si los eventos no funcionan
+        // Método 3: Timeout de respaldo por si los eventos no funcionan
         setTimeout(function() {
-          if (hasClickedFirstButton && !button.classList.contains('red-btn') && !transitionInProgress) {
+          if (hasClickedFirstButton && !button.classList.contains('red-btn')) {
             handleUserReturn();
           }
-        }, 1200); // Reducido de 5000ms a 1200ms
+        }, 1000);
       }
       
       // 4. Cuando el usuario REGRESA después de enviar solicitud
@@ -252,13 +242,12 @@
         // Solo ejecutar si aún no hemos cambiado al segundo paso
         if (button.classList.contains('red-btn')) return;
         
-        // Cambiar al SEGUNDO PASO INMEDIATAMENTE
+        // Cambiar al SEGUNDO PASO
         setupSecondStep();
       }
       
       // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
       function setupSecondStep() {
-        transitionInProgress = false;
         message.textContent = "¡Gracias por enviar tu solicitud! Será aprobada lo más pronto posible.";
         button.className = "telegram-btn red-btn";
         button.innerHTML = "Clic aquí para salir";
@@ -266,9 +255,6 @@
         
         // Configurar evento para cerrar la Mini App
         button.onclick = closeMiniApp;
-        
-        // Guardar que ya mostramos el segundo paso
-        sessionStorage.setItem('secondStepShown', 'true');
       }
       
       // 6. Función para CERRAR la Mini App
@@ -283,21 +269,8 @@
         }
       }
       
-      // INICIAR: Configurar el primer paso o ir directamente al segundo
-      function initApp() {
-        // Verificar si ya se hizo clic anteriormente
-        const hasClickedBefore = sessionStorage.getItem('hasClickedFirstButton') === 'true';
-        const secondStepShown = sessionStorage.getItem('secondStepShown') === 'true';
-        
-        if (hasClickedBefore || secondStepShown) {
-          // Si ya hizo clic antes, ir directamente al segundo paso
-          setTimeout(setupSecondStep, 100);
-        } else {
-          setupFirstStep();
-        }
-      }
-      
-      initApp();
+      // INICIAR: Configurar el primer paso
+      setupFirstStep();
       
       // Ajustar tamaño del botón para pantallas pequeñas
       function adjustButtonSize() {
@@ -309,6 +282,11 @@
       
       adjustButtonSize();
       window.addEventListener('resize', adjustButtonSize);
+      
+      // Si la app se carga y ya hemos hecho clic antes (por si se recarga)
+      if (sessionStorage.getItem('hasClickedFirstButton') === 'true') {
+        setupSecondStep();
+      }
     });
   </script>
 </body>
