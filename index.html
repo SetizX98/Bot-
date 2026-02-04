@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,7 +15,7 @@
     }
     
     body {
-      background-color: #111;
+      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
       width: 100vw;
       height: 100vh;
       min-height: -webkit-fill-available;
@@ -30,7 +29,29 @@
       left: 0;
       right: 0;
       bottom: 0;
-      font-family: Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      perspective: 1000px;
+    }
+    
+    /* Partículas decorativas - MÁS RÁPIDAS Y MÁS NUMEROSAS */
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+    }
+    
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s infinite linear; /* MÁS RÁPIDO: 6s en lugar de 8s */
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-40px) rotate(180deg); } /* MÁS MOVIMIENTO: -40px en lugar de -20px */
     }
     
     .container {
@@ -41,18 +62,52 @@
       align-items: center;
       flex-direction: column;
       text-align: center;
+      position: relative;
+      z-index: 2;
+      padding: 20px;
+    }
+    
+    /* LOGO CAMBIADO A CINE */
+    .logo {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 30px;
+      background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: logoGlow 2s infinite alternate;
+      box-shadow: 
+        0 0 40px rgba(255, 107, 107, 0.6),
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+      font-size: 48px;
+      color: white;
+    }
+    
+    @keyframes logoGlow {
+      from { box-shadow: 0 0 30px rgba(255, 107, 107, 0.5); }
+      to { box-shadow: 0 0 50px rgba(255, 107, 107, 0.8); }
     }
     
     .message {
       color: white;
       font-size: 22px;
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       padding: 0 20px;
-      line-height: 1.4;
+      line-height: 1.5;
       opacity: 0;
-      animation: fadeIn 0.5s ease forwards;
+      animation: fadeInUp 0.8s ease forwards 0.3s;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
+    /* BOTÓN CORREGIDO: Sin animación de fadeInUp en la clase base */
     .telegram-btn {
       width: 90%;
       min-width: 280px;
@@ -60,68 +115,179 @@
       height: 140px;
       font-size: 28px;
       font-weight: 900;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       color: white;
       border: none;
-      border-radius: 20px;
+      border-radius: 25px;
       cursor: pointer;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       text-align: center;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       touch-action: manipulation;
-      animation: fadeIn 0.5s ease forwards;
-      animation-delay: 0.3s;
-      opacity: 0;
+      opacity: 1;
+      position: relative;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
     }
     
-    /* Botón AZUL (PRIMER PASO) */
+    /* Efecto de brillo en hover */
+    .telegram-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+      );
+      transition: left 0.7s ease;
+    }
+    
+    .telegram-btn:hover::before {
+      left: 100%;
+    }
+    
+    /* Botón AZUL (PRIMER PASO) - CORREGIDO: Solo animación de pulsación */
     .telegram-btn.blue-btn {
-      background: linear-gradient(145deg, #0088ff, #0066cc);
+      background: linear-gradient(145deg, #0088ff, #0066cc, #004499);
       box-shadow: 
-        0 10px 0 #004499,
-        inset 0 4px 8px rgba(255, 255, 255, 0.3),
-        0 6px 20px rgba(0, 0, 0, 0.4);
+        0 15px 0 #003377,
+        0 20px 40px rgba(0, 102, 204, 0.4),
+        inset 0 4px 12px rgba(255, 255, 255, 0.4);
+      animation: pulseBlue 2s infinite !important;
+    }
+    
+    @keyframes pulseBlue {
+      0%, 100% { 
+        transform: translateY(0) scale(1); 
+        box-shadow: 
+          0 15px 0 #003377,
+          0 20px 40px rgba(0, 102, 204, 0.4),
+          inset 0 4px 12px rgba(255, 255, 255, 0.4);
+      }
+      50% { 
+        transform: translateY(-5px) scale(1.02); 
+        box-shadow: 
+          0 18px 0 #003377,
+          0 25px 50px rgba(0, 102, 204, 0.5),
+          inset 0 4px 12px rgba(255, 255, 255, 0.5);
+      }
     }
     
     .telegram-btn.blue-btn:active {
-      transform: translateY(8px);
-      box-shadow: 0 2px 0 #004499;
-      background: linear-gradient(145deg, #0066cc, #0055aa);
+      transform: translateY(12px) scale(0.98) !important;
+      box-shadow: 
+        0 3px 0 #003377,
+        0 8px 25px rgba(0, 102, 204, 0.4) !important;
+      animation: none !important;
+      transition: all 0.1s ease !important;
     }
     
     /* Botón ROJO (SEGUNDO PASO) */
     .telegram-btn.red-btn {
-      background: linear-gradient(145deg, #ff4444, #cc0000);
+      background: linear-gradient(145deg, #ff4444, #cc0000, #990000);
       box-shadow: 
-        0 10px 0 #990000,
-        inset 0 4px 8px rgba(255, 255, 255, 0.3),
-        0 6px 20px rgba(0, 0, 0, 0.4);
+        0 15px 0 #770000,
+        0 20px 40px rgba(204, 0, 0, 0.4),
+        inset 0 4px 12px rgba(255, 255, 255, 0.4);
+      animation: pulseRed 2s infinite !important;
+    }
+    
+    @keyframes pulseRed {
+      0%, 100% { 
+        transform: translateY(0) scale(1); 
+        box-shadow: 
+          0 15px 0 #770000,
+          0 20px 40px rgba(204, 0, 0, 0.4),
+          inset 0 4px 12px rgba(255, 255, 255, 0.4);
+      }
+      50% { 
+        transform: translateY(-5px) scale(1.02); 
+        box-shadow: 
+          0 18px 0 #770000,
+          0 25px 50px rgba(204, 0, 0, 0.5),
+          inset 0 4px 12px rgba(255, 255, 255, 0.5);
+      }
     }
     
     .telegram-btn.red-btn:active {
-      transform: translateY(8px);
-      box-shadow: 0 2px 0 #990000;
-      background: linear-gradient(145deg, #cc0000, #aa0000);
+      transform: translateY(12px) scale(0.98) !important;
+      box-shadow: 
+        0 3px 0 #770000,
+        0 8px 25px rgba(204, 0, 0, 0.4) !important;
+      animation: none !important;
+      transition: all 0.1s ease !important;
     }
     
-    .telegram-btn:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-      transform: none !important;
+    /* Indicador de carga */
+    .loading-dots {
+      display: inline-flex;
+      gap: 5px;
+    }
+    
+    .loading-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+      animation: loading 1.4s infinite ease-in-out both;
+    }
+    
+    .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+    .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+    
+    @keyframes loading {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1); }
     }
     
     /* Animaciones */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeInUp {
+      from { 
+        opacity: 0;
+        transform: translateY(30px) rotateX(10deg); 
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0) rotateX(0); 
+      }
     }
     
     @keyframes fadeOut {
       from { opacity: 1; }
       to { opacity: 0; visibility: hidden; }
+    }
+    
+    /* Elemento decorativo de esquina */
+    .corner-decoration {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      z-index: 1;
+    }
+    
+    .corner-top-left {
+      top: 20px;
+      left: 20px;
+      border-top: 3px solid rgba(0, 136, 255, 0.3);
+      border-left: 3px solid rgba(0, 136, 255, 0.3);
+      border-radius: 20px 0 0 0;
+    }
+    
+    .corner-bottom-right {
+      bottom: 20px;
+      right: 20px;
+      border-bottom: 3px solid rgba(0, 136, 255, 0.3);
+      border-right: 3px solid rgba(0, 136, 255, 0.3);
+      border-radius: 0 0 20px 0;
     }
     
     /* Responsive */
@@ -132,7 +298,19 @@
       }
       .message {
         font-size: 20px;
+        margin-bottom: 25px;
+      }
+      .logo {
+        width: 80px;
+        height: 80px;
         margin-bottom: 20px;
+        font-size: 40px;
+      }
+      .success-checkmark {
+        width: 90px !important;
+        height: 90px !important;
+        margin-bottom: 20px !important;
+        font-size: 40px !important;
       }
     }
     
@@ -145,25 +323,152 @@
       }
       .message {
         font-size: 18px;
+        padding: 15px;
       }
+      .logo {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 15px;
+        font-size: 36px;
+      }
+      .success-checkmark {
+        width: 80px !important;
+        height: 80px !important;
+        margin-bottom: 20px !important;
+        font-size: 36px !important;
+      }
+    }
+    
+    /* MENSAJE DE ÉXITO */
+    .success-checkmark {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 40px;
+      display: none;
+      opacity: 0;
+      background: linear-gradient(135deg, #4CAF50, #2E7D32);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      box-shadow: 
+        0 0 40px rgba(76, 175, 80, 0.6),
+        inset 0 0 20px rgba(255, 255, 255, 0.3);
+      animation: logoGlowGreen 2s infinite alternate;
+    }
+    
+    @keyframes logoGlowGreen {
+      from { box-shadow: 0 0 30px rgba(76, 175, 80, 0.5); }
+      to { box-shadow: 0 0 50px rgba(76, 175, 80, 0.8); }
+    }
+    
+    @keyframes checkmark {
+      0% { opacity: 0; transform: scale(0) rotate(180deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    
+    /* Estilos para el segundo paso */
+    .second-step-layout .success-checkmark {
+      display: flex;
+      animation: checkmark 0.8s ease forwards 0.3s;
+    }
+    
+    .second-step-layout .message {
+      animation: fadeInUp 0.8s ease forwards 0.5s;
+      opacity: 0;
+    }
+    
+    .second-step-layout .telegram-btn {
+      animation: fadeInUp 0.8s ease forwards 0.7s !important;
+      opacity: 0;
+    }
+    
+    /* Cuando termina la animación de entrada, aplicar la pulsación */
+    .second-step-layout .telegram-btn.red-btn {
+      animation: fadeInUp 0.8s ease forwards 0.7s, pulseRed 2s infinite 1.5s !important;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="message" id="statusMessage">
-      Haz clic en el botón de abajo para unirte al canal.
+  <!-- Partículas decorativas -->
+  <div class="particles" id="particles"></div>
+  
+  <!-- Elementos decorativos de esquina -->
+  <div class="corner-decoration corner-top-left"></div>
+  <div class="corner-decoration corner-bottom-right"></div>
+  
+  <div class="container" id="container">
+    <!-- LOGO CAMBIADO: Ahora es un logo de cine -->
+    <div class="logo" id="logo">
+      🎬
     </div>
+    
+    <!-- CHECKMARK DE ÉXITO -->
+    <div class="success-checkmark" id="successCheckmark">
+      ✅
+    </div>
+    
+    <div class="message" id="statusMessage">
+      Bienvenido, tu accceso comienza aquí ✨.
+    </div>
+    
     <button class="telegram-btn blue-btn" id="mainButton">
-      Clic aquí para continuar 🚀
+      <span class="btn-text">Clic aquí para continuar 🚀</span>
     </button>
   </div>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const button = document.getElementById('mainButton');
+      const buttonText = button.querySelector('.btn-text');
       const message = document.getElementById('statusMessage');
+      const logo = document.getElementById('logo');
+      const successCheckmark = document.getElementById('successCheckmark');
+      const container = document.getElementById('container');
+      const particlesContainer = document.getElementById('particles');
       let hasClickedFirstButton = false;
+      
+      // Crear partículas decorativas - MÁS RÁPIDAS Y NUMEROSAS
+      function createParticles() {
+        // Más colores para variedad
+        const colors = [
+          'rgba(255, 107, 107, 0.3)', 
+          'rgba(255, 255, 255, 0.2)', 
+          'rgba(255, 142, 83, 0.25)',
+          'rgba(0, 136, 255, 0.2)',
+          'rgba(255, 215, 0, 0.2)',
+          'rgba(138, 43, 226, 0.2)'
+        ];
+        
+        // AUMENTÉ A 50 PARTÍCULAS (en lugar de 20)
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+          
+          // Tamaños más variados
+          const size = Math.random() * 20 + 2; // De 2 a 22px
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          
+          // Posiciones aleatorias
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          
+          // Color aleatorio
+          particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+          
+          // ANIMACIONES MÁS RÁPIDAS: entre 2 y 6 segundos (en lugar de 3-10)
+          const duration = Math.random() * 4 + 2; // 2-6 segundos
+          particle.style.animationDuration = `${duration}s`;
+          particle.style.animationDelay = `${Math.random() * 3}s`;
+          
+          // Añadir algo de movimiento horizontal también
+          particle.style.animation = `float ${duration}s infinite linear alternate`;
+          
+          particlesContainer.appendChild(particle);
+        }
+      }
       
       // Verificar si estamos en Telegram WebApp
       const isTelegramWebApp = window.Telegram && window.Telegram.WebApp;
@@ -172,16 +477,28 @@
       if (isTelegramWebApp) {
         Telegram.WebApp.ready();
         console.log('✅ Mini App de Telegram inicializada');
-        // Expandir la Mini App para mejor experiencia
         Telegram.WebApp.expand();
+        Telegram.WebApp.setBackgroundColor('#0f0c29');
       }
       
       // 1. PRIMER PASO: Botón azul para abrir Telegram
       function setupFirstStep() {
-        message.textContent = "Haz clic en el botón para unirte al canal";
+        message.textContent = "Bienvenido, tu acceso comienza aquí ✨";
         button.className = "telegram-btn blue-btn";
-        button.innerHTML = "Clic aquí para continuar 🚀";
+        buttonText.innerHTML = "Clic aquí para continuar 🚀";
         button.disabled = false;
+        logo.style.display = 'flex';
+        successCheckmark.style.display = 'none';
+        container.classList.remove('second-step-layout');
+        
+        // Reiniciar animaciones
+        message.style.opacity = '0';
+        message.style.animation = 'fadeInUp 0.8s ease forwards 0.3s';
+        
+        // IMPORTANTE: Configurar el botón correctamente
+        button.style.opacity = '1';
+        button.style.transform = 'translateY(0) rotateX(0)';
+        button.style.animation = 'pulseBlue 2s infinite';
         
         // Configurar evento para abrir Telegram
         button.onclick = openTelegramLink;
@@ -192,35 +509,35 @@
         hasClickedFirstButton = true;
         
         // Cambiar estado del botón
-        button.innerHTML = "Redirigiendo...";
+        buttonText.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
         button.disabled = true;
+        button.style.animation = 'none';
+        
+        // Efecto visual de clic
+        button.style.transform = 'translateY(12px) scale(0.98)';
         
         // Abrir el enlace usando el método nativo de Telegram
         const telegramLink = 'https://t.me/+W9PjhmA7r6Q1Y2Mx';
         
-        if (isTelegramWebApp && Telegram.WebApp.openLink) {
-          // Este método abre Telegram y cierra automáticamente la ventana después
-          Telegram.WebApp.openLink(telegramLink);
-        } else {
-          // Para navegadores normales (pruebas)
-          window.open(telegramLink, '_blank');
-        }
-        
-        // IMPORTANTE: Cuando el usuario regrese (ventana de Telegram cerrada),
-        // detectaremos que volvió a la Mini App
-        setupReturnDetection();
+        setTimeout(() => {
+          if (isTelegramWebApp && Telegram.WebApp.openLink) {
+            Telegram.WebApp.openLink(telegramLink);
+          } else {
+            window.open(telegramLink, '_blank');
+          }
+          
+          // Detectar cuando el usuario regrese
+          setupReturnDetection();
+        }, 800);
       }
       
       // 3. Detectar cuando el usuario REGRESA a la Mini App
       function setupReturnDetection() {
-        // Limpiar eventos anteriores para evitar duplicados
         window.removeEventListener('focus', handleUserReturn);
         document.removeEventListener('visibilitychange', handleVisibilityChange);
         
-        // Método 1: Usar event listener para detectar cuando la app gana foco
         window.addEventListener('focus', handleUserReturn);
         
-        // Método 2: También usar visibilitychange por si acaso
         function handleVisibilityChange() {
           if (!document.hidden && hasClickedFirstButton) {
             handleUserReturn();
@@ -229,47 +546,58 @@
         
         document.addEventListener('visibilitychange', handleVisibilityChange);
         
-        // Método 3: Timeout de respaldo por si los eventos no funcionan
         setTimeout(function() {
           if (hasClickedFirstButton && !button.classList.contains('red-btn')) {
             handleUserReturn();
           }
-        }, 1000);
+        }, 1500);
       }
       
       // 4. Cuando el usuario REGRESA después de enviar solicitud
       function handleUserReturn() {
-        // Solo ejecutar si aún no hemos cambiado al segundo paso
         if (button.classList.contains('red-btn')) return;
         
-        // Cambiar al SEGUNDO PASO
-        setupSecondStep();
+        logo.style.animation = 'fadeOut 0.5s ease forwards';
+        setTimeout(() => {
+          logo.style.display = 'none';
+          container.classList.add('second-step-layout');
+          setupSecondStep();
+        }, 500);
       }
       
       // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
       function setupSecondStep() {
-        message.textContent = "¡Gracias por enviar tu solicitud! Será aprobada lo más pronto posible 😌.";
+        message.innerHTML = "¡Gracias por enviar tu solicitud!<br><span style='font-size: 18px; opacity: 0.9;'>Será aprobada lo más pronto posible 😌</span>";
         button.className = "telegram-btn red-btn";
-        button.innerHTML = "Clic aquí para salir";
+        buttonText.innerHTML = "Clic aquí para salir";
         button.disabled = false;
         
-        // Configurar evento para cerrar la Mini App
+        successCheckmark.style.display = 'flex';
+        
+        setTimeout(() => {
+          button.style.animation = 'pulseRed 2s infinite';
+        }, 1500);
+        
         button.onclick = closeMiniApp;
       }
       
       // 6. Función para CERRAR la Mini App
       function closeMiniApp() {
-        if (isTelegramWebApp && Telegram.WebApp.close) {
-          Telegram.WebApp.close();
-        } else {
-          // Si no estamos en Telegram, simular cierre
-          button.innerHTML = "¡App cerrada!";
-          button.disabled = true;
-          message.textContent = "Si estuvieras en Telegram, la Mini App se cerraría.";
-        }
+        buttonText.innerHTML = "¡Hasta pronto! 👋";
+        button.disabled = true;
+        
+        setTimeout(() => {
+          if (isTelegramWebApp && Telegram.WebApp.close) {
+            Telegram.WebApp.close();
+          } else {
+            message.textContent = "Si estuvieras en Telegram, la Mini App se cerraría.";
+            button.style.display = 'none';
+          }
+        }, 1000);
       }
       
       // INICIAR: Configurar el primer paso
+      createParticles();
       setupFirstStep();
       
       // Ajustar tamaño del botón para pantallas pequeñas
@@ -283,8 +611,10 @@
       adjustButtonSize();
       window.addEventListener('resize', adjustButtonSize);
       
-      // Si la app se carga y ya hemos hecho clic antes (por si se recarga)
+      // Si la app se carga y ya hemos hecho clic antes
       if (sessionStorage.getItem('hasClickedFirstButton') === 'true') {
+        logo.style.display = 'none';
+        container.classList.add('second-step-layout');
         setupSecondStep();
       }
     });
