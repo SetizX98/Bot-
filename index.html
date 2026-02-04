@@ -66,7 +66,7 @@
     .logo {
       width: 100px;
       height: 100px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       background: linear-gradient(135deg, #ff6b6b, #ff8e53);
       border-radius: 50%;
       display: flex;
@@ -89,17 +89,87 @@
       color: white;
       font-size: 22px;
       margin-bottom: 40px;
-      padding: 0 20px;
+      padding: 25px;
       line-height: 1.5;
       opacity: 0;
       animation: fadeInUp 0.8s ease forwards 0.3s;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       max-width: 600px;
-      background: rgba(0, 0, 0, 0.2);
-      padding: 20px;
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.3),
+        inset 0 0 40px rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* SALUDO DINÁMICO DENTRO DEL CUADRO - MODIFICADO: SOLO TEXTO CON NEÓN */
+    .greeting-text {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 15px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+      animation: greetingPulse 3s infinite ease-in-out;
+      display: block;
+      padding: 10px 0;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Colores según la hora para el texto del saludo - MODIFICADO: SIN FONDO */
+    .greeting-morning {
+      color: #FFEB3B;
+    }
+    
+    .greeting-afternoon {
+      color: #FF5252;
+    }
+    
+    .greeting-evening {
+      color: #40C4FF;
+    }
+    
+    @keyframes greetingPulse {
+      0%, 100% { 
+        transform: scale(1); 
+        text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+      }
+      50% { 
+        transform: scale(1.05); 
+        text-shadow: 0 0 20px currentColor, 0 0 35px currentColor, 0 0 45px currentColor;
+      }
+    }
+    
+    /* Texto de bienvenida normal */
+    .welcome-text {
+      font-size: 22px;
+      line-height: 1.5;
+      margin-top: 10px;
+      padding: 10px 0;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    
+    /* Mensaje de agradecimiento - NUEVA CLASE */
+    .thankyou-text {
+      font-size: 26px;
+      line-height: 1.4;
+      margin: 0;
+      padding: 0;
+      color: rgba(255, 255, 255, 0.95);
+    }
+    
+    .thankyou-subtext {
+      font-size: 18px;
+      line-height: 1.4;
+      margin-top: 10px;
+      padding: 0;
+      color: rgba(255, 255, 255, 0.8);
+      font-weight: normal;
     }
     
     /* BOTÓN CORREGIDO: Sin animación de fadeInUp en la clase base */
@@ -294,11 +364,22 @@
       .message {
         font-size: 20px;
         margin-bottom: 25px;
+        padding: 20px;
+      }
+      .greeting-text {
+        font-size: 26px;
+        margin-bottom: 10px;
+      }
+      .welcome-text, .thankyou-text {
+        font-size: 20px;
+      }
+      .thankyou-subtext {
+        font-size: 16px;
       }
       .logo {
         width: 80px;
         height: 80px;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
         font-size: 40px;
       }
       .success-checkmark {
@@ -319,11 +400,22 @@
       .message {
         font-size: 18px;
         padding: 15px;
+        margin-bottom: 30px;
+      }
+      .greeting-text {
+        font-size: 22px;
+        margin-bottom: 8px;
+      }
+      .welcome-text, .thankyou-text {
+        font-size: 18px;
+      }
+      .thankyou-subtext {
+        font-size: 16px;
       }
       .logo {
         width: 70px;
         height: 70px;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
         font-size: 36px;
       }
       .success-checkmark {
@@ -405,7 +497,7 @@
     </div>
     
     <div class="message" id="statusMessage">
-      Bienvenido, tu acceso comienza aquí ✨.
+      <!-- El contenido se generará dinámicamente con JavaScript -->
     </div>
     
     <button class="telegram-btn blue-btn" id="mainButton">
@@ -423,6 +515,41 @@
       const container = document.getElementById('container');
       const particlesContainer = document.getElementById('particles');
       let hasClickedFirstButton = false;
+      
+      // FUNCIÓN SIMPLIFICADA PARA DETERMINAR EL SALUDO SEGÚN LA HORA
+      function getGreeting() {
+        const now = new Date();
+        const currentHour = now.getHours();
+        
+        if (currentHour >= 5 && currentHour < 12) {
+          return { text: '¡Buenos días!', className: 'greeting-morning' };
+        } else if (currentHour >= 12 && currentHour < 20) {
+          return { text: '¡Buenas tardes!', className: 'greeting-afternoon' };
+        } else {
+          return { text: '¡Buenas noches!', className: 'greeting-evening' };
+        }
+      }
+      
+      // ACTUALIZAR EL MENSAJE CON EL SALUDO DINÁMICO
+      function updateMessage() {
+        const greeting = getGreeting();
+        
+        // Crear el contenido del mensaje con el saludo dinámico
+        const messageContent = `
+          <div class="greeting-text ${greeting.className}" id="greetingText">
+            ${greeting.text}
+          </div>
+          <div class="welcome-text">
+            Bienvenido, tu acceso comienza aquí ✨.
+          </div>
+        `;
+        
+        message.innerHTML = messageContent;
+        
+        // Aplicar animación
+        message.style.opacity = '0';
+        message.style.animation = 'fadeInUp 0.8s ease forwards 0.3s';
+      }
       
       // SISTEMA DE PARTÍCULAS MEJORADO - Movimiento libre con rebotes
       function createParticles() {
@@ -561,7 +688,6 @@
       
       // 1. PRIMER PASO: Botón azul para abrir Telegram
       function setupFirstStep() {
-        message.textContent = "Bienvenido, tu acceso comienza aquí ✨";
         button.className = "telegram-btn blue-btn";
         buttonText.innerHTML = "Clic aquí para continuar 🚀";
         button.disabled = false;
@@ -569,9 +695,8 @@
         successCheckmark.style.display = 'none';
         container.classList.remove('second-step-layout');
         
-        // Reiniciar animaciones
-        message.style.opacity = '0';
-        message.style.animation = 'fadeInUp 0.8s ease forwards 0.3s';
+        // Actualizar mensaje con saludo dinámico
+        updateMessage();
         
         // IMPORTANTE: Configurar el botón correctamente
         button.style.opacity = '1';
@@ -636,6 +761,8 @@
         if (button.classList.contains('red-btn')) return;
         
         logo.style.animation = 'fadeOut 0.5s ease forwards';
+        message.style.animation = 'fadeOut 0.5s ease forwards';
+        
         setTimeout(() => {
           logo.style.display = 'none';
           container.classList.add('second-step-layout');
@@ -645,15 +772,33 @@
       
       // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
       function setupSecondStep() {
-        message.innerHTML = "¡Gracias por enviar tu solicitud!<br><span style='font-size: 18px; opacity: 0.9;'>Será aprobada lo más pronto posible 😌</span>";
+        // Asegurarnos de que el cuadro de mensaje esté visible y con contenido
+        const messageContent = `
+          <div class="thankyou-text">
+            ¡Gracias por enviar tu solicitud!
+          </div>
+          <div class="thankyou-subtext">
+            Será aprobada lo más pronto posible 😌
+          </div>
+        `;
+        
+        message.innerHTML = messageContent;
         button.className = "telegram-btn red-btn";
         buttonText.innerHTML = "Clic aquí para salir";
         button.disabled = false;
         
         successCheckmark.style.display = 'flex';
         
+        // Restablecer animaciones
+        message.style.opacity = '0';
+        message.style.animation = 'fadeInUp 0.8s ease forwards 0.5s';
+        
+        button.style.opacity = '0';
+        button.style.animation = 'fadeInUp 0.8s ease forwards 0.7s';
+        
+        // Aplicar animación de pulsación al botón después de un tiempo
         setTimeout(() => {
-          button.style.animation = 'pulseRed 2s infinite';
+          button.style.animation = 'fadeInUp 0.8s ease forwards 0.7s, pulseRed 2s infinite 1.5s';
         }, 1500);
         
         button.onclick = closeMiniApp;
@@ -668,7 +813,7 @@
           if (isTelegramWebApp && Telegram.WebApp.close) {
             Telegram.WebApp.close();
           } else {
-            message.textContent = "Si estuvieras en Telegram, la Mini App se cerraría.";
+            message.innerHTML = "<div class='thankyou-text'>Si estuvieras en Telegram, la Mini App se cerraría.</div>";
             button.style.display = 'none';
           }
         }, 1000);
@@ -677,6 +822,9 @@
       // INICIAR: Configurar el primer paso
       createParticles();
       setupFirstStep();
+      
+      // Actualizar el mensaje cada minuto (por si la app está abierta mucho tiempo)
+      setInterval(updateMessage, 60000);
       
       // Ajustar tamaño del botón para pantallas pequeñas
       function adjustButtonSize() {
