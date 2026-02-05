@@ -135,13 +135,13 @@
     .greeting-text {
       font-size: 28px; /* Cambiado de 32px a 28px */
       font-weight: 900;
-      margin-bottom: 15px;
+      margin-bottom: 5px; /* Reducido de 15px a 5px */
       letter-spacing: 1.5px;
       text-transform: uppercase;
       text-shadow: 0 0 10px currentColor;
       animation: greetingPulseOptimized 3s infinite ease-in-out;
       display: block;
-      padding: 10px 0;
+      padding: 5px 0; /* Reducido de 10px 0 a 5px 0 */
       position: relative;
       z-index: 1;
       will-change: transform, opacity;
@@ -178,8 +178,8 @@
     .welcome-text {
       font-size: 22px;
       line-height: 1.5;
-      margin-top: 10px;
-      padding: 10px 0;
+      margin-top: 5px; /* Reducido de 10px a 5px */
+      padding: 5px 0; /* Reducido de 10px 0 a 5px 0 */
       color: rgba(255, 255, 255, 0.95);
     }
     
@@ -356,8 +356,19 @@
     }
     
     @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; visibility: hidden; }
+      from { opacity: 1; transform: translateY(0); }
+      to { opacity: 0; transform: translateY(-20px); visibility: hidden; }
+    }
+    
+    @keyframes slideInUp {
+      from { 
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
     
     /* Elemento decorativo de esquina */
@@ -405,7 +416,8 @@
       }
       .greeting-text {
         font-size: 22px; /* Cambiado de 26px a 22px */
-        margin-bottom: 10px;
+        margin-bottom: 3px; /* Reducido de 10px a 3px */
+        padding: 3px 0; /* Reducido */
       }
       .welcome-text, .thankyou-text {
         font-size: 20px;
@@ -449,7 +461,8 @@
       }
       .greeting-text {
         font-size: 20px; /* Cambiado de 22px a 20px */
-        margin-bottom: 8px;
+        margin-bottom: 2px; /* Reducido de 8px a 2px */
+        padding: 2px 0; /* Reducido */
       }
       .welcome-text, .thankyou-text {
         font-size: 18px;
@@ -513,22 +526,22 @@
     /* Estilos para el segundo paso */
     .second-step-layout .success-checkmark {
       display: flex;
-      animation: checkmark 0.8s ease forwards 0.3s;
+      animation: checkmark 0.6s ease forwards 0.2s;
     }
     
     .second-step-layout .message {
-      animation: fadeInUp 0.8s ease forwards 0.5s;
+      animation: slideInUp 0.8s ease forwards 0.4s;
       opacity: 0;
     }
     
     .second-step-layout .telegram-btn {
-      animation: fadeInUp 0.8s ease forwards 0.7s !important;
+      animation: slideInUp 0.8s ease forwards 0.6s !important;
       opacity: 0;
     }
     
     /* Cuando termina la animación de entrada, aplicar la pulsación */
     .second-step-layout .telegram-btn.red-btn {
-      animation: fadeInUp 0.8s ease forwards 0.7s, pulseRed 2s infinite 1.5s !important;
+      animation: slideInUp 0.8s ease forwards 0.6s, pulseRed 2s infinite 1.4s !important;
     }
   </style>
 </head>
@@ -774,10 +787,14 @@
         successCheckmark.style.display = 'none';
         container.classList.remove('second-step-layout');
         
+        // Resetear animaciones del logo
+        logo.style.animation = 'logoGlow 2s infinite alternate';
+        logo.style.opacity = '1';
+        
         // Actualizar mensaje con saludo dinámico
         updateMessage();
         
-        // IMPORTANTE: Configurar el botón correctamente
+        // Configurar el botón
         button.style.opacity = '1';
         button.style.transform = 'translateY(0) rotateX(0)';
         button.style.animation = 'pulseBlue 2s infinite';
@@ -835,21 +852,22 @@
         }, 1500);
       }
       
-      // 4. Cuando el usuario REGRESA después de enviar solicitud
+      // 4. Cuando el usuario REGRESA después de enviar solicitud - TRANSICIÓN MEJORADA
       function handleUserReturn() {
         if (button.classList.contains('red-btn')) return;
         
-        logo.style.animation = 'fadeOut 0.5s ease forwards';
-        message.style.animation = 'fadeOut 0.5s ease forwards';
+        // Primero, animar la salida del logo actual
+        logo.style.animation = 'fadeOut 0.4s ease forwards';
         
+        // Esperar un poco antes de cambiar al segundo paso
         setTimeout(() => {
           logo.style.display = 'none';
           container.classList.add('second-step-layout');
           setupSecondStep();
-        }, 500);
+        }, 400);
       }
       
-      // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
+      // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir - TRANSICIÓN MEJORADA
       function setupSecondStep() {
         // Asegurarnos de que el cuadro de mensaje esté visible y con contenido
         const messageContent = `
@@ -870,14 +888,14 @@
         
         // Restablecer animaciones
         message.style.opacity = '0';
-        message.style.animation = 'fadeInUp 0.8s ease forwards 0.5s';
+        message.style.animation = 'slideInUp 0.8s ease forwards 0.4s';
         
         button.style.opacity = '0';
-        button.style.animation = 'fadeInUp 0.8s ease forwards 0.7s';
+        button.style.animation = 'slideInUp 0.8s ease forwards 0.6s';
         
         // Aplicar animación de pulsación al botón después de un tiempo
         setTimeout(() => {
-          button.style.animation = 'fadeInUp 0.8s ease forwards 0.7s, pulseRed 2s infinite 1.5s';
+          button.style.animation = 'slideInUp 0.8s ease forwards 0.6s, pulseRed 2s infinite 1.4s';
         }, 1500);
         
         button.onclick = closeMiniApp;
