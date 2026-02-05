@@ -7,6 +7,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
   <style>
+    /* CLASE PARA PAUSAR ANIMACIONES CUANDO LA APP NO ESTÁ ACTIVA */
+    .animations-paused * {
+      animation-play-state: paused !important;
+      transition: none !important;
+    }
+    
+    .animations-paused .particle {
+      animation: none !important;
+    }
+    
+    /* Optimización para dispositivos con preferencia de reducción de movimiento */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    
+    /* Clase específica para pausar animaciones del botón */
+    .animations-paused .telegram-btn {
+      animation: none !important;
+    }
+    
+    /* Clase específica para pausar animaciones del logo */
+    .animations-paused .logo {
+      animation: none !important;
+    }
+    
+    /* Clase específica para pausar animaciones del saludo */
+    .animations-paused .greeting-text {
+      animation: none !important;
+      text-shadow: 0 0 15px currentColor !important;
+      transform: scale(1) !important;
+    }
+    
+    /* ESTILOS EXISTENTES */
     * {
       margin: 0;
       padding: 0;
@@ -133,15 +170,15 @@
     
     /* SALUDO DINÁMICO DENTRO DEL CUADRO - VERSIÓN OPTIMIZADA PARA RENDIMIENTO */
     .greeting-text {
-      font-size: 28px; /* Cambiado de 32px a 28px */
+      font-size: 28px;
       font-weight: 900;
-      margin-bottom: 5px; /* Reducido de 15px a 5px */
+      margin-bottom: 5px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       text-shadow: 0 0 10px currentColor;
       animation: greetingPulseOptimized 3s infinite ease-in-out;
       display: block;
-      padding: 5px 0; /* Reducido de 10px 0 a 5px 0 */
+      padding: 5px 0;
       position: relative;
       z-index: 1;
       will-change: transform, opacity;
@@ -178,8 +215,8 @@
     .welcome-text {
       font-size: 22px;
       line-height: 1.5;
-      margin-top: 5px; /* Reducido de 10px a 5px */
-      padding: 5px 0; /* Reducido de 10px 0 a 5px 0 */
+      margin-top: 5px;
+      padding: 5px 0;
       color: rgba(255, 255, 255, 0.95);
     }
     
@@ -415,9 +452,9 @@
         padding: 20px;
       }
       .greeting-text {
-        font-size: 22px; /* Cambiado de 26px a 22px */
-        margin-bottom: 3px; /* Reducido de 10px a 3px */
-        padding: 3px 0; /* Reducido */
+        font-size: 22px;
+        margin-bottom: 3px;
+        padding: 3px 0;
       }
       .welcome-text, .thankyou-text {
         font-size: 20px;
@@ -460,9 +497,9 @@
         margin-bottom: 30px;
       }
       .greeting-text {
-        font-size: 20px; /* Cambiado de 22px a 20px */
-        margin-bottom: 2px; /* Reducido de 8px a 2px */
-        padding: 2px 0; /* Reducido */
+        font-size: 20px;
+        margin-bottom: 2px;
+        padding: 2px 0;
       }
       .welcome-text, .thankyou-text {
         font-size: 18px;
@@ -588,6 +625,69 @@
       const particlesContainer = document.getElementById('particles');
       let hasClickedFirstButton = false;
       
+      // VARIABLES PARA CONTROL DE ANIMACIONES
+      let isAppActive = true;
+      let particleAnimationId = null;
+      let animationControlInterval = null;
+      let particlesArray = [];
+      
+      // FUNCIÓN PARA DETECTAR SI LA APP ESTÁ ACTIVA
+      function checkAppVisibility() {
+        const wasActive = isAppActive;
+        
+        // Verificar múltiples condiciones de inactividad
+        const isHidden = document.hidden || document.visibilityState !== 'visible';
+        const isBackground = document.hasFocus ? !document.hasFocus() : false;
+        const isMinimized = window.innerWidth === 0 || window.innerHeight === 0;
+        
+        isAppActive = !(isHidden || isBackground || isMinimized);
+        
+        // Si el estado cambió, actualizar animaciones
+        if (wasActive !== isAppActive) {
+          updateAnimationsState();
+        }
+      }
+      
+      // FUNCIÓN PARA ACTUALIZAR EL ESTADO DE TODAS LAS ANIMACIONES
+      function updateAnimationsState() {
+        if (isAppActive) {
+          // REANUDAR animaciones cuando la app está activa
+          document.body.classList.remove('animations-paused');
+          
+          // Reanudar partículas si existen
+          if (particlesArray.length > 0 && particleAnimationId === null) {
+            animateParticles();
+          }
+          
+          // Reanudar animaciones CSS
+          const allElements = document.querySelectorAll('*');
+          allElements.forEach(el => {
+            if (el.style.animationPlayState === 'paused') {
+              el.style.animationPlayState = 'running';
+            }
+          });
+          
+          console.log('▶️ Animaciones reanudadas');
+        } else {
+          // PAUSAR animaciones cuando la app NO está activa
+          document.body.classList.add('animations-paused');
+          
+          // Pausar animaciones de partículas
+          if (particleAnimationId !== null) {
+            cancelAnimationFrame(particleAnimationId);
+            particleAnimationId = null;
+          }
+          
+          // Pausar animaciones CSS manualmente
+          const animatedElements = document.querySelectorAll('.logo, .telegram-btn, .greeting-text, .message, .date-display, .success-checkmark');
+          animatedElements.forEach(el => {
+            el.style.animationPlayState = 'paused';
+          });
+          
+          console.log('⏸️ Animaciones pausadas');
+        }
+      }
+      
       // FUNCIÓN PARA FORMATEAR LA FECHA EN ESPAÑOL
       function formatDate() {
         const now = new Date();
@@ -598,7 +698,6 @@
         const dayOfWeek = days[now.getDay()];
         const dayOfMonth = now.getDate();
         const month = months[now.getMonth()];
-        const year = now.getFullYear();
         
         return `${dayOfWeek}, ${dayOfMonth} de ${month}`;
       }
@@ -643,10 +742,12 @@
         message.style.animation = 'fadeInUp 0.8s ease forwards 0.3s';
       }
       
-      // SISTEMA DE PARTÍCULAS MEJORADO - Movimiento libre con rebotes
+      // SISTEMA DE PARTÍCULAS MEJORADO - CON CONTROL DE ACTIVIDAD
       function createParticles() {
-        // Array para almacenar todas las partículas
-        const particles = [];
+        // Limpiar partículas anteriores si existen
+        particlesArray = [];
+        particlesContainer.innerHTML = '';
+        
         const colors = [
           'rgba(255, 107, 107, 0.3)', 
           'rgba(255, 255, 255, 0.2)', 
@@ -660,7 +761,7 @@
         const containerWidth = particlesContainer.clientWidth;
         const containerHeight = particlesContainer.clientHeight;
         
-        // Crear 30 partículas
+        // Crear 30 partículas (reducido para mejor rendimiento)
         for (let i = 0; i < 30; i++) {
           const particle = document.createElement('div');
           particle.className = 'particle';
@@ -681,21 +782,21 @@
           particle.style.top = `${initialY}px`;
           
           // Propiedades de movimiento
-          const speed = Math.random() * 0.8 + 0.3; // Velocidad (0.3 - 1.1)
-          const angle = Math.random() * Math.PI * 2; // Dirección aleatoria en radianes (0-360°)
+          const speed = Math.random() * 0.8 + 0.3;
+          const angle = Math.random() * Math.PI * 2;
           
           // Velocidad en X e Y
           const velocityX = Math.cos(angle) * speed;
           const velocityY = Math.sin(angle) * speed;
           
           // Rotación
-          const rotationSpeed = (Math.random() - 0.5) * 2; // -1 a 1
+          const rotationSpeed = (Math.random() - 0.5) * 2;
           let rotation = 0;
           
           particlesContainer.appendChild(particle);
           
           // Almacenar datos de la partícula
-          particles.push({
+          particlesArray.push({
             element: particle,
             x: initialX,
             y: initialY,
@@ -707,64 +808,58 @@
           });
         }
         
-        // Función de animación
-        function animateParticles() {
-          const currentWidth = particlesContainer.clientWidth;
-          const currentHeight = particlesContainer.clientHeight;
-          
-          for (const p of particles) {
-            // Actualizar posición
-            p.x += p.velocityX;
-            p.y += p.velocityY;
-            
-            // Actualizar rotación
-            p.rotation += p.rotationSpeed;
-            
-            // Verificar colisiones con los bordes
-            if (p.x <= 0) {
-              p.x = 0;
-              p.velocityX = Math.abs(p.velocityX); // Rebote a la derecha
-            } else if (p.x >= currentWidth - p.size) {
-              p.x = currentWidth - p.size;
-              p.velocityX = -Math.abs(p.velocityX); // Rebote a la izquierda
-            }
-            
-            if (p.y <= 0) {
-              p.y = 0;
-              p.velocityY = Math.abs(p.velocityY); // Rebote hacia abajo
-            } else if (p.y >= currentHeight - p.size) {
-              p.y = currentHeight - p.size;
-              p.velocityY = -Math.abs(p.velocityY); // Rebote hacia arriba
-            }
-            
-            // Aplicar transformación
-            p.element.style.left = `${p.x}px`;
-            p.element.style.top = `${p.y}px`;
-            p.element.style.transform = `rotate(${p.rotation}deg)`;
-          }
-          
-          // Continuar la animación
-          requestAnimationFrame(animateParticles);
+        // Iniciar animación solo si la app está activa
+        if (isAppActive) {
+          animateParticles();
+        }
+      }
+      
+      // FUNCIÓN DE ANIMACIÓN DE PARTÍCULAS CON CONTROL DE ACTIVIDAD
+      function animateParticles() {
+        // No animar si la app no está activa
+        if (!isAppActive) {
+          particleAnimationId = null;
+          return;
         }
         
-        // Iniciar animación
-        animateParticles();
+        const currentWidth = particlesContainer.clientWidth;
+        const currentHeight = particlesContainer.clientHeight;
         
-        // Redimensionar partículas si cambia el tamaño de la ventana
-        window.addEventListener('resize', function() {
-          // Ajustar posiciones si las partículas se salen de los nuevos límites
-          const newWidth = particlesContainer.clientWidth;
-          const newHeight = particlesContainer.clientHeight;
+        for (const p of particlesArray) {
+          // Actualizar posición
+          p.x += p.velocityX;
+          p.y += p.velocityY;
           
-          for (const p of particles) {
-            if (p.x > newWidth - p.size) {
-              p.x = newWidth - p.size;
-            }
-            if (p.y > newHeight - p.size) {
-              p.y = newHeight - p.size;
-            }
+          // Actualizar rotación
+          p.rotation += p.rotationSpeed;
+          
+          // Verificar colisiones con los bordes
+          if (p.x <= 0) {
+            p.x = 0;
+            p.velocityX = Math.abs(p.velocityX);
+          } else if (p.x >= currentWidth - p.size) {
+            p.x = currentWidth - p.size;
+            p.velocityX = -Math.abs(p.velocityX);
           }
-        });
+          
+          if (p.y <= 0) {
+            p.y = 0;
+            p.velocityY = Math.abs(p.velocityY);
+          } else if (p.y >= currentHeight - p.size) {
+            p.y = currentHeight - p.size;
+            p.velocityY = -Math.abs(p.velocityY);
+          }
+          
+          // Aplicar transformación
+          p.element.style.left = `${p.x}px`;
+          p.element.style.top = `${p.y}px`;
+          p.element.style.transform = `rotate(${p.rotation}deg)`;
+        }
+        
+        // Continuar animación solo si estamos activos
+        if (isAppActive) {
+          particleAnimationId = requestAnimationFrame(animateParticles);
+        }
       }
       
       // Verificar si estamos en Telegram WebApp
@@ -943,6 +1038,34 @@
       
       // Iniciar el programa de actualización a medianoche
       scheduleMidnightUpdate();
+      
+      // INICIALIZAR SISTEMA DE CONTROL DE ANIMACIONES
+      checkAppVisibility(); // Estado inicial
+      
+      // Escuchar eventos de visibilidad
+      document.addEventListener('visibilitychange', checkAppVisibility);
+      window.addEventListener('focus', checkAppVisibility);
+      window.addEventListener('blur', checkAppVisibility);
+      window.addEventListener('resize', checkAppVisibility);
+      
+      // En Telegram WebApp, también escuchar eventos específicos
+      if (isTelegramWebApp) {
+        // Telegram puede tener eventos especiales para estado de la app
+        Telegram.WebApp.onEvent('viewportChanged', checkAppVisibility);
+      }
+      
+      // Monitorear periódicamente el estado de la app (cada 2 segundos)
+      animationControlInterval = setInterval(checkAppVisibility, 2000);
+      
+      // Limpiar intervalos al salir
+      window.addEventListener('beforeunload', function() {
+        if (animationControlInterval) {
+          clearInterval(animationControlInterval);
+        }
+        if (particleAnimationId) {
+          cancelAnimationFrame(particleAnimationId);
+        }
+      });
       
       // Ajustar tamaño del botón para pantallas pequeñas
       function adjustButtonSize() {
