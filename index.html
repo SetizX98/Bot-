@@ -131,22 +131,24 @@
       overflow: hidden;
     }
     
-    /* SALUDO DINÁMICO DENTRO DEL CUADRO - MODIFICADO: SOLO TEXTO CON NEÓN */
+    /* SALUDO DINÁMICO DENTRO DEL CUADRO - VERSIÓN OPTIMIZADA PARA RENDIMIENTO */
     .greeting-text {
       font-size: 32px;
       font-weight: 900;
       margin-bottom: 15px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
-      animation: greetingPulse 3s infinite ease-in-out;
+      text-shadow: 0 0 10px currentColor;
+      animation: greetingPulseOptimized 3s infinite ease-in-out;
       display: block;
       padding: 10px 0;
       position: relative;
       z-index: 1;
+      will-change: transform, opacity;
+      backface-visibility: hidden;
     }
     
-    /* Colores según la hora para el texto del saludo - MODIFICADO: SIN FONDO */
+    /* Colores según la hora para el texto del saludo */
     .greeting-morning {
       color: #FFEB3B;
     }
@@ -159,14 +161,16 @@
       color: #40C4FF;
     }
     
-    @keyframes greetingPulse {
+    /* ANIMACIÓN OPTIMIZADA: Se animan propiedades GPU-friendly */
+    @keyframes greetingPulseOptimized {
       0%, 100% { 
         transform: scale(1); 
-        text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+        opacity: 0.95;
       }
       50% { 
         transform: scale(1.05); 
-        text-shadow: 0 0 20px currentColor, 0 0 35px currentColor, 0 0 45px currentColor;
+        opacity: 1;
+        text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
       }
     }
     
@@ -464,6 +468,16 @@
         height: 80px !important;
         margin-bottom: 20px !important;
         font-size: 36px !important;
+      }
+    }
+    
+    /* Desactiva la animación en móviles y pantallas pequeñas para máximo rendimiento */
+    @media (max-height: 700px), (hover: none) {
+      .greeting-text {
+        animation: none !important;
+        text-shadow: 0 0 15px currentColor !important;
+        transform: scale(1) !important;
+        opacity: 1 !important;
       }
     }
     
