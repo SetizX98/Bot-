@@ -11,7 +11,7 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
     }
     
     body {
@@ -31,9 +31,10 @@
       bottom: 0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
       perspective: 1000px;
+      touch-action: none;
     }
     
-    /* Partículas decorativas - SISTEMA MEJORADO */
+    /* Partículas decorativas - REDUCIDAS PARA MEJOR RENDIMIENTO */
     .particles {
       position: absolute;
       width: 100%;
@@ -46,7 +47,6 @@
       position: absolute;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 50%;
-      will-change: transform;
     }
     
     /* DISPLAY DE FECHA - NUEVO */
@@ -133,19 +133,17 @@
     
     /* SALUDO DINÁMICO DENTRO DEL CUADRO - VERSIÓN OPTIMIZADA PARA RENDIMIENTO */
     .greeting-text {
-      font-size: 28px; /* Cambiado de 32px a 28px */
+      font-size: 28px;
       font-weight: 900;
-      margin-bottom: 5px; /* Reducido de 15px a 5px */
+      margin-bottom: 5px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
       text-shadow: 0 0 10px currentColor;
       animation: greetingPulseOptimized 3s infinite ease-in-out;
       display: block;
-      padding: 5px 0; /* Reducido de 10px 0 a 5px 0 */
+      padding: 5px 0;
       position: relative;
       z-index: 1;
-      will-change: transform, opacity;
-      backface-visibility: hidden;
     }
     
     /* Colores según la hora para el texto del saludo */
@@ -178,8 +176,8 @@
     .welcome-text {
       font-size: 22px;
       line-height: 1.5;
-      margin-top: 5px; /* Reducido de 10px a 5px */
-      padding: 5px 0; /* Reducido de 10px 0 a 5px 0 */
+      margin-top: 5px;
+      padding: 5px 0;
       color: rgba(255, 255, 255, 0.95);
     }
     
@@ -201,7 +199,7 @@
       font-weight: normal;
     }
     
-    /* BOTÓN CORREGIDO: Sin animación de fadeInUp en la clase base */
+    /* BOTÓN OPTIMIZADO PARA MÓVILES */
     .telegram-btn {
       width: 90%;
       min-width: 280px;
@@ -219,13 +217,15 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       touch-action: manipulation;
       opacity: 1;
       position: relative;
       overflow: hidden;
-      transform-style: preserve-3d;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
       transform: translateZ(0);
+      will-change: transform;
     }
     
     /* Efecto de brillo en hover */
@@ -249,7 +249,7 @@
       left: 100%;
     }
     
-    /* Botón AZUL (PRIMER PASO) - CORREGIDO: Solo animación de pulsación */
+    /* Botón AZUL (PRIMER PASO) */
     .telegram-btn.blue-btn {
       background: linear-gradient(145deg, #0088ff, #0066cc, #004499);
       box-shadow: 
@@ -282,7 +282,7 @@
         0 3px 0 #003377,
         0 8px 25px rgba(0, 102, 204, 0.4) !important;
       animation: none !important;
-      transition: all 0.1s ease !important;
+      transition: transform 0.05s ease, box-shadow 0.05s ease !important;
     }
     
     /* Botón ROJO (SEGUNDO PASO) */
@@ -318,7 +318,7 @@
         0 3px 0 #770000,
         0 8px 25px rgba(204, 0, 0, 0.4) !important;
       animation: none !important;
-      transition: all 0.1s ease !important;
+      transition: transform 0.05s ease, box-shadow 0.05s ease !important;
     }
     
     /* Indicador de carga */
@@ -382,16 +382,16 @@
     .corner-top-left {
       top: 20px;
       left: 20px;
-      border-top: 5px solid rgba(135, 206, 235, 0.6); /* Azul celeste, más grueso (de 3px a 5px) */
-      border-left: 5px solid rgba(135, 206, 235, 0.6); /* Azul celeste, más grueso (de 3px a 5px) */
+      border-top: 5px solid rgba(135, 206, 235, 0.6);
+      border-left: 5px solid rgba(135, 206, 235, 0.6);
       border-radius: 20px 0 0 0;
     }
     
     .corner-bottom-right {
       bottom: 20px;
       right: 20px;
-      border-bottom: 5px solid rgba(135, 206, 235, 0.6); /* Azul celeste, más grueso (de 3px a 5px) */
-      border-right: 5px solid rgba(135, 206, 235, 0.6); /* Azul celeste, más grueso (de 3px a 5px) */
+      border-bottom: 5px solid rgba(135, 206, 235, 0.6);
+      border-right: 5px solid rgba(135, 206, 235, 0.6);
       border-radius: 0 0 20px 0;
     }
     
@@ -415,9 +415,9 @@
         padding: 20px;
       }
       .greeting-text {
-        font-size: 22px; /* Cambiado de 26px a 22px */
-        margin-bottom: 3px; /* Reducido de 10px a 3px */
-        padding: 3px 0; /* Reducido */
+        font-size: 22px;
+        margin-bottom: 3px;
+        padding: 3px 0;
       }
       .welcome-text, .thankyou-text {
         font-size: 20px;
@@ -460,9 +460,9 @@
         margin-bottom: 30px;
       }
       .greeting-text {
-        font-size: 20px; /* Cambiado de 22px a 20px */
-        margin-bottom: 2px; /* Reducido de 8px a 2px */
-        padding: 2px 0; /* Reducido */
+        font-size: 20px;
+        margin-bottom: 2px;
+        padding: 2px 0;
       }
       .welcome-text, .thankyou-text {
         font-size: 18px;
@@ -499,7 +499,6 @@
       width: 120px;
       height: 120px;
       margin: 0 auto 40px;
-      display: none;
       opacity: 0;
       background: linear-gradient(135deg, #4CAF50, #2E7D32);
       border-radius: 50%;
@@ -587,6 +586,7 @@
       const container = document.getElementById('container');
       const particlesContainer = document.getElementById('particles');
       let hasClickedFirstButton = false;
+      let isTouchDevice = 'ontouchstart' in window;
       
       // FUNCIÓN PARA FORMATEAR LA FECHA EN ESPAÑOL
       function formatDate() {
@@ -598,7 +598,6 @@
         const dayOfWeek = days[now.getDay()];
         const dayOfMonth = now.getDate();
         const month = months[now.getMonth()];
-        const year = now.getFullYear();
         
         return `${dayOfWeek}, ${dayOfMonth} de ${month}`;
       }
@@ -645,7 +644,10 @@
       
       // SISTEMA DE PARTÍCULAS MEJORADO - Movimiento libre con rebotes
       function createParticles() {
-        // Array para almacenar todas las partículas
+        // Reducir partículas en móviles para mejor rendimiento
+        const isMobile = window.innerWidth < 768;
+        const particleCount = isMobile ? 15 : 30;
+        
         const particles = [];
         const colors = [
           'rgba(255, 107, 107, 0.3)', 
@@ -660,13 +662,13 @@
         const containerWidth = particlesContainer.clientWidth;
         const containerHeight = particlesContainer.clientHeight;
         
-        // Crear 30 partículas
-        for (let i = 0; i < 30; i++) {
+        // Crear partículas
+        for (let i = 0; i < particleCount; i++) {
           const particle = document.createElement('div');
           particle.className = 'particle';
           
           // Tamaño aleatorio
-          const size = Math.random() * 20 + 2;
+          const size = Math.random() * 15 + 2;
           particle.style.width = `${size}px`;
           particle.style.height = `${size}px`;
           
@@ -681,16 +683,12 @@
           particle.style.top = `${initialY}px`;
           
           // Propiedades de movimiento
-          const speed = Math.random() * 0.8 + 0.3; // Velocidad (0.3 - 1.1)
-          const angle = Math.random() * Math.PI * 2; // Dirección aleatoria en radianes (0-360°)
+          const speed = Math.random() * 0.5 + 0.2;
+          const angle = Math.random() * Math.PI * 2;
           
           // Velocidad en X e Y
           const velocityX = Math.cos(angle) * speed;
           const velocityY = Math.sin(angle) * speed;
-          
-          // Rotación
-          const rotationSpeed = (Math.random() - 0.5) * 2; // -1 a 1
-          let rotation = 0;
           
           particlesContainer.appendChild(particle);
           
@@ -701,13 +699,12 @@
             y: initialY,
             size: size,
             velocityX: velocityX,
-            velocityY: velocityY,
-            rotation: rotation,
-            rotationSpeed: rotationSpeed
+            velocityY: velocityY
           });
         }
         
-        // Función de animación
+        // Función de animación optimizada
+        let animationId;
         function animateParticles() {
           const currentWidth = particlesContainer.clientWidth;
           const currentHeight = particlesContainer.clientHeight;
@@ -717,52 +714,40 @@
             p.x += p.velocityX;
             p.y += p.velocityY;
             
-            // Actualizar rotación
-            p.rotation += p.rotationSpeed;
-            
             // Verificar colisiones con los bordes
             if (p.x <= 0) {
               p.x = 0;
-              p.velocityX = Math.abs(p.velocityX); // Rebote a la derecha
+              p.velocityX = Math.abs(p.velocityX);
             } else if (p.x >= currentWidth - p.size) {
               p.x = currentWidth - p.size;
-              p.velocityX = -Math.abs(p.velocityX); // Rebote a la izquierda
+              p.velocityX = -Math.abs(p.velocityX);
             }
             
             if (p.y <= 0) {
               p.y = 0;
-              p.velocityY = Math.abs(p.velocityY); // Rebote hacia abajo
+              p.velocityY = Math.abs(p.velocityY);
             } else if (p.y >= currentHeight - p.size) {
               p.y = currentHeight - p.size;
-              p.velocityY = -Math.abs(p.velocityY); // Rebote hacia arriba
+              p.velocityY = -Math.abs(p.velocityY);
             }
             
             // Aplicar transformación
             p.element.style.left = `${p.x}px`;
             p.element.style.top = `${p.y}px`;
-            p.element.style.transform = `rotate(${p.rotation}deg)`;
           }
           
-          // Continuar la animación
-          requestAnimationFrame(animateParticles);
+          animationId = requestAnimationFrame(animateParticles);
         }
         
         // Iniciar animación
         animateParticles();
         
-        // Redimensionar partículas si cambia el tamaño de la ventana
-        window.addEventListener('resize', function() {
-          // Ajustar posiciones si las partículas se salen de los nuevos límites
-          const newWidth = particlesContainer.clientWidth;
-          const newHeight = particlesContainer.clientHeight;
-          
-          for (const p of particles) {
-            if (p.x > newWidth - p.size) {
-              p.x = newWidth - p.size;
-            }
-            if (p.y > newHeight - p.size) {
-              p.y = newHeight - p.size;
-            }
+        // Detener animación cuando no esté visible
+        document.addEventListener('visibilitychange', function() {
+          if (document.hidden) {
+            cancelAnimationFrame(animationId);
+          } else {
+            animateParticles();
           }
         });
       }
@@ -773,7 +758,6 @@
       // Inicializar WebApp de Telegram si está disponible
       if (isTelegramWebApp) {
         Telegram.WebApp.ready();
-        console.log('✅ Mini App de Telegram inicializada');
         Telegram.WebApp.expand();
         Telegram.WebApp.setBackgroundColor('#0f0c29');
       }
@@ -796,7 +780,7 @@
         
         // Configurar el botón
         button.style.opacity = '1';
-        button.style.transform = 'translateY(0) rotateX(0)';
+        button.style.transform = 'translateY(0) scale(1)';
         button.style.animation = 'pulseBlue 2s infinite';
         
         // Configurar evento para abrir Telegram
@@ -807,13 +791,14 @@
       function openTelegramLink() {
         hasClickedFirstButton = true;
         
-        // Cambiar estado del botón
+        // Cambiar estado del botón inmediatamente
         buttonText.innerHTML = '<span class="loading-dots"><span></span><span></span><span></span></span>';
         button.disabled = true;
         button.style.animation = 'none';
         
-        // Efecto visual de clic
+        // Efecto visual de clic inmediato
         button.style.transform = 'translateY(12px) scale(0.98)';
+        button.style.boxShadow = '0 3px 0 #003377, 0 8px 25px rgba(0, 102, 204, 0.4)';
         
         // Abrir el enlace usando el método nativo de Telegram
         const telegramLink = 'https://t.me/+W9PjhmA7r6Q1Y2Mx';
@@ -827,7 +812,7 @@
           
           // Detectar cuando el usuario regrese
           setupReturnDetection();
-        }, 800);
+        }, 300); // Reducido de 800ms a 300ms
       }
       
       // 3. Detectar cuando el usuario REGRESA a la Mini App
@@ -849,27 +834,25 @@
           if (hasClickedFirstButton && !button.classList.contains('red-btn')) {
             handleUserReturn();
           }
-        }, 1500);
+        }, 1000); // Reducido de 1500ms a 1000ms
       }
       
-      // 4. Cuando el usuario REGRESA después de enviar solicitud - TRANSICIÓN MEJORADA
+      // 4. Cuando el usuario REGRESA después de enviar solicitud
       function handleUserReturn() {
         if (button.classList.contains('red-btn')) return;
         
-        // Primero, animar la salida del logo actual
-        logo.style.animation = 'fadeOut 0.4s ease forwards';
+        // Animación más rápida
+        logo.style.animation = 'fadeOut 0.3s ease forwards';
         
-        // Esperar un poco antes de cambiar al segundo paso
         setTimeout(() => {
           logo.style.display = 'none';
           container.classList.add('second-step-layout');
           setupSecondStep();
-        }, 400);
+        }, 300); // Reducido de 400ms a 300ms
       }
       
-      // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir - TRANSICIÓN MEJORADA
+      // 5. SEGUNDO PASO: Mostrar agradecimiento y botón para salir
       function setupSecondStep() {
-        // Asegurarnos de que el cuadro de mensaje esté visible y con contenido
         const messageContent = `
           <div class="thankyou-text">
             ¡Gracias por enviar tu solicitud!
@@ -888,15 +871,15 @@
         
         // Restablecer animaciones
         message.style.opacity = '0';
-        message.style.animation = 'slideInUp 0.8s ease forwards 0.4s';
+        message.style.animation = 'slideInUp 0.6s ease forwards 0.2s';
         
         button.style.opacity = '0';
-        button.style.animation = 'slideInUp 0.8s ease forwards 0.6s';
+        button.style.animation = 'slideInUp 0.6s ease forwards 0.4s';
         
-        // Aplicar animación de pulsación al botón después de un tiempo
+        // Aplicar animación de pulsación al botón
         setTimeout(() => {
-          button.style.animation = 'slideInUp 0.8s ease forwards 0.6s, pulseRed 2s infinite 1.4s';
-        }, 1500);
+          button.style.animation = 'pulseRed 2s infinite';
+        }, 1000);
         
         button.onclick = closeMiniApp;
       }
@@ -913,18 +896,18 @@
             message.innerHTML = "<div class='thankyou-text'>Si estuvieras en Telegram, la Mini App se cerraría.</div>";
             button.style.display = 'none';
           }
-        }, 1000);
+        }, 500); // Reducido de 1000ms a 500ms
       }
       
       // INICIAR: Configurar el primer paso
       createParticles();
-      updateDate(); // Inicializar la fecha
+      updateDate();
       setupFirstStep();
       
-      // Actualizar la fecha cada minuto (por si la app está abierta mucho tiempo)
+      // Actualizar la fecha cada minuto
       setInterval(updateDate, 60000);
       
-      // Actualizar el mensaje cada minuto (por si la app está abierta mucho tiempo)
+      // Actualizar el mensaje cada minuto
       setInterval(updateMessage, 60000);
       
       // Programar actualización de fecha a medianoche
@@ -936,30 +919,37 @@
         
         setTimeout(function() {
           updateDate();
-          // Programar la próxima actualización para la siguiente medianoche
           scheduleMidnightUpdate();
         }, timeUntilMidnight);
       }
       
-      // Iniciar el programa de actualización a medianoche
       scheduleMidnightUpdate();
       
-      // Ajustar tamaño del botón para pantallas pequeñas
-      function adjustButtonSize() {
-        const viewportHeight = window.innerHeight;
-        if (viewportHeight < 700) {
-          button.style.height = Math.max(110, viewportHeight * 0.18) + 'px';
-        }
-      }
-      
-      adjustButtonSize();
-      window.addEventListener('resize', adjustButtonSize);
-      
-      // Si la app se carga y ya hemos hecho clic antes
-      if (sessionStorage.getItem('hasClickedFirstButton') === 'true') {
-        logo.style.display = 'none';
-        container.classList.add('second-step-layout');
-        setupSecondStep();
+      // Optimizar para móviles
+      if (isTouchDevice) {
+        // Mejorar respuesta táctil
+        button.addEventListener('touchstart', function(e) {
+          this.style.transform = 'translateY(12px) scale(0.98)';
+          if (this.classList.contains('blue-btn')) {
+            this.style.boxShadow = '0 3px 0 #003377, 0 8px 25px rgba(0, 102, 204, 0.4)';
+          } else if (this.classList.contains('red-btn')) {
+            this.style.boxShadow = '0 3px 0 #770000, 0 8px 25px rgba(204, 0, 0, 0.4)';
+          }
+          this.style.animation = 'none';
+        }, { passive: true });
+        
+        button.addEventListener('touchend', function(e) {
+          if (!this.disabled) {
+            this.style.transform = 'translateY(0) scale(1)';
+            if (this.classList.contains('blue-btn')) {
+              this.style.boxShadow = '0 15px 0 #003377, 0 20px 40px rgba(0, 102, 204, 0.4), inset 0 4px 12px rgba(255, 255, 255, 0.4)';
+              this.style.animation = 'pulseBlue 2s infinite';
+            } else if (this.classList.contains('red-btn')) {
+              this.style.boxShadow = '0 15px 0 #770000, 0 20px 40px rgba(204, 0, 0, 0.4), inset 0 4px 12px rgba(255, 255, 255, 0.4)';
+              this.style.animation = 'pulseRed 2s infinite';
+            }
+          }
+        }, { passive: true });
       }
     });
   </script>
